@@ -49,13 +49,18 @@ switch type
         y = sig-re_j;
         if W_2<W_
             Wstop=2*(W_-threshold)/fADC;
-            [b,a]=butter(30,Wstop,'low');
+            wp=Wstop;ws=2*W_/fADC;rp=0.1;rs=60;   %DF指标（低通滤波器的通、阻带边界频）
+            [N,wp]=ellipord(wp,ws,rp,rs); %调用ellipord计算椭圆DF阶数N和通带截止频率wp
+            [b,a]=ellip(N,rp,rs,wp);
+
             y=filter(b,a,y);
         else
             Wpass = 2*(W_+threshold)/fADC;
-            [b,a] = butter(5,Wpass,'high');
+            wp = Wpass;ws = 2*W_/fADC;rp=0.1;rs=60;   %DF指标（低通滤波器的通、阻带边界频）
+            [N,wp]=ellipord(wp,ws,rp,rs);    %调用ellipord计算椭圆DF阶数N和通带截止频率wp
+            [b,a]=ellip(N,rp,rs,wp,'high'); %调用ellip计算椭圆带通DF系统函数系数向量B和A
             y = filter(b,a,y);
-        end        
+        end            
 end
 
 
