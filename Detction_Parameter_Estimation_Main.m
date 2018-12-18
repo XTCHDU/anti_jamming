@@ -78,7 +78,7 @@ title('无干扰回波时域波形')
 %%%%%%%%%%%加干扰
 res = zeros(1,1000);
 count = 0;
-for JNR = 10
+for JNR = -10
      count = count + 1;
      x_lab(count) = JNR;
 
@@ -113,7 +113,7 @@ for JNR = 10
         ylabel('幅度')
         title('无干扰回波频谱图')
         figure;
-        plot(fAxis,(abs(fft(jam))))
+        plot(fAxis,fftshift(abs(fft(jam))))
         xlabel('频率/hz')
         ylabel('幅度')
         title('干扰频谱')
