@@ -62,14 +62,14 @@ sigNLFM = A*exp(j*2*pi*fCar*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigBPSK;%change signal type for different input
+sig = sigLFM;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
 ylabel('Amplitude')
 
 
-sig = awgn(sig,1000,'measured');
+sig = awgn(sig,10,'measured');
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
@@ -77,9 +77,13 @@ ylabel('Amplitude')
 title('无干扰回波时域波形')
 %%%%%%%%%%%加干扰
 res = zeros(1,1000);
+count = 0;
+for JNR = 10
+     count = count + 1;
+     x_lab(count) = JNR;
 
-for JNR = -10
     for ROUND = 1:1
+        close all;
         %JNR = 10;%设置JNR
         jam_type = 1;%1 噪声调幅干扰；2 噪声调频干扰
         jam_freq = 13e6; %type==1时，干扰的频率设置 注意与信号有间隔，信号在5e6-10e6之间，信号最好在12e6以上
@@ -105,34 +109,44 @@ for JNR = -10
         fAxis = linspace(-fADC/2,fADC/2,length(tTotal));
         figure;
         plot(fAxis,fftshift(abs(fft(sig))))%
+        xlabel('频率/hz')
+        ylabel('幅度')
         title('无干扰回波频谱图')
         figure;
         plot(fAxis,(abs(fft(jam))))
+        xlabel('频率/hz')
+        ylabel('幅度')
         title('干扰频谱')
         figure;
         plot(fAxis,fftshift(abs(fft(receiveSignal))))%
+        xlabel('频率/hz')
+        ylabel('幅度')
         title('干扰+回波频谱图')
         
         %%%%%%%%%%%%
         re_sig = dataProcess(receiveSignal,length(tTotal),jam_type,fADC);
         figure;
         plot(real(re_sig));
+        xlabel('t/us')
+        ylabel('Amplitude')
         title('复原信号时域图')
         figure;
         plot(fAxis,fftshift(abs(fft(re_sig))))
+        xlabel('频率/hz')
+        ylabel('幅度')
         title('复原信号频谱图')
         w_re_j = sum(abs(sig-re_sig).^2)/length(re_sig);
-        res(JNR) = res(JNR)+10*log10(w_re_j/w_signal);
+        res(count) = res(count)+10*log10(w_re_j/w_signal);
         
         
     end
 end
-% res = res./ROUND;
-% figure;
-% plot(1:2:60,res(1:2:60))
-% xlabel('JNR（dB）')
-% ylabel('抑制后JNR（dB）')
-%%%%%%%%%%%%
+ res = res./ROUND;
+ figure;
+ plot(x_lab,res(1:length(x_lab)))
+xlabel('环境JNR（dB）')
+ylabel('抑制后JNR（dB）')
+%%%%%%%%%%%
 
 
 %Signal detection
