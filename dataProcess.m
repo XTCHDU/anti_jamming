@@ -40,11 +40,11 @@ switch type
             [~,index] = max(FT_right);
             W_2 = fAxis(base+index-1);
         end
-        y = ifft(ifftshift(FT_log_sig),length(sig));
-        return 
-        %W_ = 13e6;
+        %return 
+        W_ = 13e6;
+        W_2 = 5e6;
         for i = 1:length(sig)
-            re_j(i) = abs(sig(i)).*cos(2*pi*W_*(0:N-1)/fADC)%exp(1j*2*pi*W_*(i-1)/fADC);
+            re_j(i) = abs(sig(i))*exp(1j*2*pi*W_*(i-1)/fADC);
         end
         y = sig-re_j;
         if W_2<W_
@@ -61,6 +61,7 @@ switch type
             [b,a]=ellip(N,rp,rs,wp,'high'); %调用ellip计算椭圆带通DF系统函数系数向量B和A
             y = filter(b,a,y);
         end            
+        y = mapminmax(real(y),-1,1);
 end
 
 

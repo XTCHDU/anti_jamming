@@ -78,7 +78,7 @@ title('无干扰回波时域波形')
 %%%%%%%%%%%加干扰
 res = zeros(1,1000);
 count = 0;
-for JNR = -10
+for JNR = 30
      count = count + 1;
      x_lab(count) = JNR;
 
