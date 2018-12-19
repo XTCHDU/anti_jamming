@@ -21,7 +21,15 @@ switch type
     case 1
         lg_sig = sig;
         FT_sig = fft(sig);
-        FT_sig(90:110) = 0;
+        [peaks,ind] = findpeaks(abs(FT_sig),'minpeakheight',40);
+        max_space = 0;
+        dis = diff(ind);
+        if dis(1)>dis(end)
+            w_est = ind(1);
+        else
+            w_est = ind(end);
+        end
+        FT_sig(w_est-3:w_est+3) = 0;
         y = ifft(FT_sig);
         return
         FFT_N = 2^(ceil(log2(length(sig)))+1);
@@ -41,8 +49,6 @@ switch type
             W_2 = fAxis(base+index-1);
         end
         %return 
-        W_ = 13e6;
-        W_2 = 5e6;
         for i = 1:length(sig)
             re_j(i) = abs(sig(i))*exp(1j*2*pi*W_*(i-1)/fADC);
         end
