@@ -1,9 +1,9 @@
 %This simulation is used for radar signal (MP, BPSK, LFM and NLFM) detection and parameter estimation
 close all
 clear all
-
-fADC = 100e6; %sampling rate
-fCar = 5e6; %carrier frequency
+warning off
+fADC = 10e6; %sampling rate
+fCar = 4e6; %carrier frequency
 Ttotal = 7.5e-6; %total time duration
 T = 5.5e-6; %signal duration
 A = 1; %signal amplitude
@@ -62,14 +62,13 @@ sigNLFM = A*exp(j*2*pi*fCar*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigLFM;%change signal type for different input
+sig = sigMP;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
 ylabel('Amplitude')
 
-
-sig = awgn(sig,10,'measured');
+sig = awgn(sig,1000,'measured');
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
@@ -78,15 +77,16 @@ title('无干扰回波时域波形')
 %%%%%%%%%%%加干扰
 res = zeros(1,1000);
 count = 0;
-for JNR = -2
+sig_sum = zeros(120,length(sig));
+for JNR = -5
      count = count + 1;
      x_lab(count) = JNR;
 
-    for ROUND = 1:1
-        close all;
+    for ROUND = 1:5
+        %close all;
         %JNR = 10;%设置JNR
         jam_type = 1;%1 噪声调幅干扰；2 噪声调频干扰
-        jam_freq = 13e6; %type==1时，干扰的频率设置 注意与信号有间隔，信号在5e6-10e6之间，信号最好在12e6以上
+        jam_freq = 3e6; %type==1时，干扰的频率设置 注意与信号有间隔，信号在5e6-10e6之间，信号最好在12e6以上
         w_signal = sum(abs(sig).^2)/length(sig);
         w_jamming = sqrt(10^(JNR/10)*w_signal);
         B = 3e6;
@@ -137,7 +137,7 @@ for JNR = -2
         title('复原信号频谱图')
         w_re_j = sum(abs(sig-re_sig).^2)/length(re_sig);
         res(count) = res(count)+10*log10(w_re_j/w_signal);
-        
+        sig
         
     end
 end

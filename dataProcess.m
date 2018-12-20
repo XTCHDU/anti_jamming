@@ -21,10 +21,13 @@ switch type
     case 1
         lg_sig = sig;
         FT_sig = fft(sig);
-        [peaks,ind] = findpeaks(abs(FT_sig),'minpeakheight',40);
+        [peaks,ind] = findpeaks(abs(FT_sig),'minpeakheight',10);
         max_space = 0;
         dis = diff(ind);
-        if dis(1)>dis(end)
+        if length(dis) == 0
+            dis(1)=ind(1);
+        end
+        if dis(1)>=dis(end)
             w_est = ind(1);
         else
             w_est = ind(end);

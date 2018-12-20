@@ -1,4 +1,4 @@
-function [mag,y] = jamming(N,type,fADC,Amp,B,T,jam_freq)
+function [mag,y] = JamGen(N,type,fADC,Amp,B,T,jam_freq)
 mag = zeros(1,N);
 switch type
     case 1
@@ -9,5 +9,5 @@ switch type
             n(i) = n(i)+n(i-1);
         end
         y = Amp*exp(1j*(2*pi*5e6*(0:N-1)/fADC+2*pi*B/T.*n));
-        mag = (2*pi*2e6*(0:N-1)/fADC+2*pi*B/T.*n);
+        mag = (2*pi*5e6*(0:N-1)/fADC+2*pi*B/T.*n);
 end
