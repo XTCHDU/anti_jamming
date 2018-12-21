@@ -24,7 +24,7 @@ switch type
         [~,index] = max(abs(FT_sig));
         FT_sig(index:index) = 10;
         y = ifft(FT_sig);
-        %return
+        return
         FFT_N = 2^(ceil(log2(length(sig)))+1);
         %FFT_N = length(sig);
         FT_log_sig = fftshift(abs(fft(lg_sig,FFT_N)));
