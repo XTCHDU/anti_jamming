@@ -63,7 +63,7 @@ sigNLFM = A*exp(j*2*pi*0*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigBPSK;%change signal type for different input
+sig = sigMP;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
@@ -79,16 +79,16 @@ title('无干扰回波时域波形')
 res = zeros(1,1000);
 count = 0;
 sig_sum = zeros(120,length(sig)*5);
-for num_sig = 1:10
+for num_sig = 1:1
     num_sig
-for JNR = 10
+for JNR = 0:5:50
      count = count + 1;
      x_lab(count) = JNR;
 
-    for ROUND = 1:5
+    for ROUND = 1:10
         close all;
         %JNR = 10;%设置JNR
-        jam_type = 2;%1 噪声调幅干扰；2 噪声调频干扰
+        jam_type = 1;%1 噪声调幅干扰；2 噪声调频干扰
         jam_freq = 12e6; %type==1时，干扰的频率设置 注意与信号有间隔，信号在5e6-10e6之间，信号最好在12e6以上
         w_signal = sum(abs(sig).^2)/length(sig);
         w_jamming = sqrt(10^(JNR/10)*w_signal);
@@ -149,7 +149,7 @@ end
 end
  res = res./ROUND;
  figure;
- plot(x_lab,res(1:length(x_lab)))
+ plot(x_lab,res(1:length(x_lab)),'-*')
 xlabel('环境JNR（dB）')
 ylabel('抑制后JNR（dB）')
 %%%%%%%%%%%
