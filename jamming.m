@@ -7,7 +7,7 @@ switch type
         mag = amp;
     case 2
         n = normrnd(0,2,1,N);
-        for i = 2:length(n)
+        for i = 2:length(n)                   
             n(i) = n(i)+n(i-1);
         end
         y = Amp*exp(1j*(2*pi*4e6*(0:N-1)/fADC+2*pi*B/T.*n));
