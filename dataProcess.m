@@ -1,23 +1,15 @@
-function y = dataProcess(sig,N,type,fADC,jam)
+function y = dataProcess(sig,N,type,fADC,norm_f,Amp)
 switch type
     case 2
-        lg_sig = log(sig);
-        Rx = real(lg_sig);
-        Ix = imag(lg_sig);
-        base = Ix(1);
-        for i = 2:N
-            if Ix(i)>base+pi
-                Ix(i) = Ix(i)-2*pi;
-            else
-                if Ix(i)<base-pi
-                    Ix(i) = Ix(i)+2*pi;
-                end
-            end
-        end
-        A_ = exp(mean(Rx));
-        J = A_*exp(1j*(Ix));
-        y = sig - J;
-        
+        Rx = real(sig);
+        Ix = imag(sig);
+        abs_x = abs(sig).^2;
+        Ex = mean(abs_x);
+        Varx = var(abs_x);
+        x1 = sqrt((2*Ex+sqrt(4*Ex^2-8*Varx))/4)
+        x2 = sqrt((2*Ex-sqrt(4*Ex^2-8*Varx))/4)
+        J = x1*exp(1j*norm_f(2,:))+x2*exp(1j*norm_f(1,:));
+        y = sig-J;
     case 1
         lg_sig = sig;
         FT_sig = fft(sig);

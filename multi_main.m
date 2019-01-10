@@ -2,7 +2,7 @@
 close all
 clear all
 warning off
-fADC = 10e6; %sampling rate
+fADC = 50e6; %sampling rate
 fCar = 4e6; %carrier frequency
 Ttotal = 7.5e-6; %total time duration
 T = 5.5e-6; %signal duration
@@ -63,7 +63,7 @@ sigNLFM = A*exp(j*2*pi*0*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigLFM;%change signal type for different input
+sig = sigMP;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
@@ -79,7 +79,9 @@ title('无干扰回波时域波形')
 res = zeros(1,1000);
 count = 0;
 sig_sum = zeros(120,length(sig)*5);
-for JNR = 10
+norm_f = zeros(num_jam,length(sig));
+Amp = zeros(num_jam,1);
+for JNR = 30
     receiveSignal = sig;
     jam_total = zeros(1,length(sig));
     for jam_idx = 1:num_jam
@@ -88,7 +90,7 @@ for JNR = 10
         w_signal = sum(abs(sig).^2)/length(sig);
         w_jamming = sqrt(10^(JNR/10)*w_signal)*jam_idx;
         B = 3e6;
-        [mag1,jam]= jamming(length(tTotal),jam_type,fADC,w_jamming,B,T,jam_freq);%生成干扰
+        [Amp(jam_idx),norm_f(jam_idx,:),jam]= jamming(length(tTotal),jam_type,fADC,w_jamming,B,T,jam_freq);%生成干扰
         receiveSignal = receiveSignal + jam;
         jam_total = jam_total + jam;
         figure;
@@ -129,7 +131,7 @@ for JNR = 10
     title('干扰+回波频谱图')
     
     %%%%%%%%%%%%
-    re_sig = dataProcess(receiveSignal,length(tTotal),jam_type,fADC,sig);
+    re_sig = dataProcess(receiveSignal,length(tTotal),jam_type,fADC,norm_f,Amp);
     figure;
     plot(real(re_sig));
     xlabel('t/us')
