@@ -4,10 +4,14 @@ switch type
         Rx = real(sig);
         Ix = imag(sig);
         abs_x = abs(sig).^2;
+        mean_cos = mean(cos(norm_f(1,:)-norm_f(2,:)));
+        Varcos = var(cos(norm_f(1,:)-norm_f(2,:)));
         Ex = mean(abs_x);
         Varx = var(abs_x);
-        x1 = sqrt((2*Ex+sqrt(4*Ex^2-8*Varx))/4)
-        x2 = sqrt((2*Ex-sqrt(4*Ex^2-8*Varx))/4)
+        Var2ab = Varx/Varcos;
+        Ex = Ex-sqrt(Var2ab)*mean_cos;
+        x1 = sqrt((Ex+sqrt(Ex.^2-Var2ab))/2)
+        x2 = sqrt((Ex-sqrt(Ex.^2-Var2ab))/2)
         J = x1*exp(1j*norm_f(2,:))+x2*exp(1j*norm_f(1,:));
         y = sig-J;
     case 1

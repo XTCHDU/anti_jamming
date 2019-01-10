@@ -2,7 +2,7 @@
 close all
 clear all
 warning off
-fADC = 50e6; %sampling rate
+fADC = 100e6; %sampling rate
 fCar = 4e6; %carrier frequency
 Ttotal = 7.5e-6; %total time duration
 T = 5.5e-6; %signal duration
@@ -63,7 +63,7 @@ sigNLFM = A*exp(j*2*pi*0*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigMP;%change signal type for different input
+sig = sigBPSK;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
