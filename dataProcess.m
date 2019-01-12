@@ -1,8 +1,19 @@
 function y = dataProcess(sig,N,type,fADC,norm_f,Amp)
 switch type
     case 2
-        Rx = real(sig);
-        Ix = imag(sig);
+        last_a = 0;
+        last_b = 0;
+        delta = 5;
+        m_cos1 = mean(cos(norm_f(1,:))./(cos(norm_f(1,:))+delta));
+        m_cos2 = mean(cos(norm_f(2,:))./(cos(norm_f(1,:))+delta));
+        m_cos3 = mean(cos(norm_f(1,:))./(cos(norm_f(2,:))+delta));
+        m_cos4 = mean(cos(norm_f(2,:))./(cos(norm_f(2,:))+delta));
+        m_sig1 = mean(real(sig)./(cos(norm_f(1,:))+delta));
+        m_sig2 = mean(real(sig)./(cos(norm_f(2,:))+delta));
+        a = (m_sig1*m_cos4-m_sig2*m_cos2)/(m_cos1*m_cos4-m_cos2*m_cos3)
+        b = (m_sig1*m_cos3-m_sig2*m_cos1)/(m_cos2*m_cos3-m_cos1*m_cos4)
+        J = b*exp(1j*norm_f(2,:))+a*exp(1j*norm_f(1,:));
+        y = sig-J;
         abs_x = abs(sig).^2;
         mean_cos = mean(cos(norm_f(1,:)-norm_f(2,:)));
         Varcos = var(cos(norm_f(1,:)-norm_f(2,:)));

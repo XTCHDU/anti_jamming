@@ -2,7 +2,7 @@
 close all
 clear all
 warning off
-fADC = 100e6; %sampling rate
+fADC = 10e6; %sampling rate
 fCar = 4e6; %carrier frequency
 Ttotal = 7.5e-6; %total time duration
 T = 5.5e-6; %signal duration
@@ -53,17 +53,17 @@ sigBPSK = [zeros(1,Nspace),sigBPSK, zeros(1,Nspace)];
 %Generate LFM signal
 B = 4e6;
 chirpRate =B/Ttotal;
-sigLFM = A*exp(j*2*pi*0*t + j*pi*chirpRate*t.^2);
+sigLFM = A*exp(j*2*pi*fCar*t + j*pi*chirpRate*t.^2);
 sigLFM = [zeros(1,Nspace),sigLFM, zeros(1,Nspace)];
 
 %Generate NLFM signal
 a1 = 1e11;
 a2 = 5e16;
-sigNLFM = A*exp(j*2*pi*0*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
+sigNLFM = A*exp(j*2*pi*fCar*t + j*pi*a1*t.^2 + j*pi*a2*t.^3);
 sigNLFM = [zeros(1,Nspace),sigNLFM, zeros(1,Nspace)];
 
 %Input signal
-sig = sigBPSK;%change signal type for different input
+sig = sigLFM;%change signal type for different input
 figure;
 plot(tTotal*1e6,sig)
 xlabel('t/us')
